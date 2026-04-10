@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="AI Challenge Arena Round 4: ISS Real-Time Dashboard + Ghost Review" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://api.wheretheiss.at https://basemaps.cartocdn.com; worker-src blob:; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <title>Round 4 — Mission Control</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="landing-body">
+  <div class="orb orb-a"></div>
+  <div class="orb orb-b"></div>
+
+  <main class="landing-shell">
+    <header class="hero">
+      <p class="kicker">AI Challenge Arena • Round 4 • Captain Rank</p>
+      <h1>Mission Control: ISS Tracker + Adversarial Review</h1>
+      <p class="hero-copy">
+        Two captain-rank deliverables: a live ISS real-time tracking dashboard and
+        a rigorous adversarial peer review of a published space-science paper.
+      </p>
+    </header>
+
+    <section class="card-grid" aria-label="Project modules">
+      <article class="mission-card">
+        <div class="card-badge">Mission A</div>
+        <h2>ISS Real-Time Dashboard</h2>
+        <p>
+          Live ISS position on interactive world map, orbital parameters updated every 2 seconds,
+          and current crew manifest with nationalities.
+        </p>
+        <a class="btn" href="iss-dashboard.html">Open Dashboard</a>
+      </article>
+
+      <article class="mission-card">
+        <div class="card-badge card-badge--red">Mission B</div>
+        <h2>Ghost Review</h2>
+        <p>
+          Adversarial peer review of a real published space-science abstract. 3+ genuine
+          weaknesses identified, substantive improvements proposed — formatted as Reviewer 2.
+        </p>
+        <a class="btn btn--red" href="ghost-review.html">Open Review</a>
+      </article>
+    </section>
+
+    <footer class="footer-note">
+      Built for GitHub Pages · Secure-by-default frontend · Round 4 — 2026
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Live ISS tracking dashboard — position, crew, orbital parameters" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' https://fonts.googleapis.com https://unpkg.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; connect-src 'self' https://api.wheretheiss.at https://basemaps.cartocdn.com; worker-src blob:; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <title>ISS Dashboard | Round 4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body class="iss-body">
+
+  <header class="topbar">
+    <a class="back-link" href="index.html">← Mission Hub</a>
+    <div class="topbar-center">
+      <span class="iss-label">ISS • ZARYA</span>
+      <span class="pulse-dot" id="liveDot"></span>
+      <span id="liveStatus">Connecting...</span>
+    </div>
+    <span class="status-dot" id="apiStatus">Initializing</span>
+  </header>
+
+  <div class="iss-layout">
+
+    <!-- MAP -->
+    <div id="map" class="iss-map" aria-label="ISS live position map"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="iss-sidebar">
+
+      <!-- Orbital Parameters -->
+      <section class="stat-card">
+        <h2 class="stat-title">Orbital Parameters</h2>
+        <div class="stat-grid">
+          <div class="stat-item">
+            <p class="stat-label">Altitude</p>
+            <p class="stat-value" id="statAltitude">—</p>
+            <p class="stat-unit">km</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-label">Velocity</p>
+            <p class="stat-value" id="statVelocity">—</p>
+            <p class="stat-unit">km/s</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-label">Orbital Period</p>
+            <p class="stat-value" id="statPeriod">—</p>
+            <p class="stat-unit">min</p>
+          </div>
+          <div class="stat-item">
+            <p class="stat-label">Visibility</p>
+            <p class="stat-value stat-value--sm" id="statVisibility">—</p>
+            <p class="stat-unit">&nbsp;</p>
+          </div>
+          <div class="stat-item stat-item--wide">
+            <p class="stat-label">Latitude / Longitude</p>
+            <p class="stat-value stat-value--sm" id="statCoords">—</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Crew Manifest -->
+      <section class="stat-card">
+        <h2 class="stat-title">Current Crew <span class="badge" id="crewCount">7</span></h2>
+        <p class="stat-note">ISS Expedition 73 · verified April 2026</p>
+        <ul class="crew-list" id="crewList">
+          <li class="crew-item">
+            <span class="flag">🇺🇸</span>
+            <div>
+              <p class="crew-name">Anne McClain</p>
+              <p class="crew-role">Commander · NASA</p>
+            </div>
+          </li>
+          <li class="crew-item">
+            <span class="flag">🇺🇸</span>
+            <div>
+              <p class="crew-name">Don Pettit</p>
+              <p class="crew-role">Flight Engineer · NASA</p>
+            </div>
+          </li>
+          <li class="crew-item">
+            <span class="flag">🇺🇸</span>
+            <div>
+              <p class="crew-name">Nichole Mann</p>
+              <p class="crew-role">Flight Engineer · NASA</p>
+            </div>
+          </li>
+          <li class="crew-item">
+            <span class="flag">🇷🇺</span>
+            <div>
+              <p class="crew-name">Alexey Ovchinin</p>
+              <p class="crew-role">Flight Engineer · Roscosmos</p>
+            </div>
+          </li>
+          <li class="crew-item">
+            <span class="flag">🇷🇺</span>
+            <div>
+              <p class="crew-name">Ivan Vagner</p>
+              <p class="crew-role">Flight Engineer · Roscosmos</p>
+            </div>
+          </li>
+          <li class="crew-item">
+            <span class="flag">🇷🇺</span>
+            <div>
+              <p class="crew-name">Alexander Gorbunov</p>
+              <p class="crew-role">Flight Engineer · Roscosmos</p>
+            </div>
+          </li>
+          <li class="crew-item">
+            <span class="flag">🇯🇵</span>
+            <div>
+              <p class="crew-name">Takuya Onishi</p>
+              <p class="crew-role">Flight Engineer · JAXA</p>
+            </div>
+          </li>
+        </ul>
+      </section>
+
+    </aside>
+  </div>
+
+  <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script src="assets/iss.js" defer></script>
+</body>
+</html>

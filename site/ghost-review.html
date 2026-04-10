@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Adversarial peer review of a published space-science abstract — Ghost Review" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <title>Ghost Review | Round 4</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <div class="orb orb-b"></div>
+
+  <header class="topbar">
+    <a class="back-link" href="index.html">← Mission Hub</a>
+    <span class="status-dot status-dot--red">Adversarial Review · Mission B</span>
+  </header>
+
+  <main class="page-shell brief-shell">
+    <article class="brief-paper">
+
+      <header>
+        <p class="kicker">Ghost Review — Adversarial Peer Analysis</p>
+        <h1>Reviewer 2 Response: Phosphine Gas in the Cloud Decks of Venus</h1>
+        <p class="meta">
+          Target paper: Greaves et al., <em>Nature Astronomy</em> (2020) ·
+          DOI: <a href="https://doi.org/10.1038/s41550-020-1174-4" target="_blank" rel="noopener noreferrer">10.1038/s41550-020-1174-4</a>
+        </p>
+      </header>
+
+      <!-- Original Abstract -->
+      <section class="review-block">
+        <h2>Abstract Under Review</h2>
+        <blockquote class="abstract-quote">
+          "Here we report the apparent presence of phosphine (PH₃) in the atmosphere of Venus.
+          In the temperate Venusian atmosphere (~53–61 km altitude), we detected a spectral feature
+          at 266.94 GHz using both the James Clerk Maxwell Telescope (JCMT) and the Atacama Large
+          Millimeter Array (ALMA). We were unable to identify any chemical process that could produce
+          phosphine in such abundances (~20 ppb) aside from life. We conclude that the production of
+          phosphine by life is the most plausible hypothesis."
+          <cite>— Greaves et al., <em>Nature Astronomy</em>, 2020</cite>
+        </blockquote>
+      </section>
+
+      <!-- Reviewer Summary -->
+      <section class="review-block">
+        <h2>Reviewer 2 — Summary Decision</h2>
+        <p class="review-verdict review-verdict--major">
+          Major Revisions Required
+        </p>
+        <p>
+          This manuscript makes an extraordinary claim — the presence of a biosignature in the
+          atmosphere of a neighbouring planet — that demands an extraordinary standard of evidence.
+          While the detection is scientifically interesting, the current manuscript contains
+          significant unresolved issues in spectral identification, abundance estimation, and the
+          exclusion of abiotic production pathways. I recommend major revisions before the claim of
+          biological origin can be considered credible.
+        </p>
+      </section>
+
+      <!-- Weakness 1 -->
+      <section class="review-block">
+        <div class="weakness-header">
+          <span class="weakness-tag">Weakness 1</span>
+          <h2>Spectral Line Identification and Calibration Artefacts</h2>
+        </div>
+        <p><strong>Issue:</strong>
+          The claimed PH₃ detection rests on a single spectral line at 266.94 GHz. This frequency
+          overlaps with a known SO₂ absorption feature at 267.54 GHz and is within the instrumental
+          calibration uncertainty of the ALMA dataset. Critically, the ALMA data were subsequently
+          retracted by the observatory (NRAO, October 2020) due to a calibration error that
+          artificially inflated signal amplitudes by a factor of ~2. The reprocessed ALMA data
+          yielded a far weaker residual signal that is no longer statistically robust without
+          independent confirmation.
+        </p>
+        <p class="review-suggestion"><strong>Suggested improvement:</strong>
+          The authors must provide updated figures using the corrected ALMA pipeline (CASA v5.7+)
+          and clearly quantify the residual line strength post-correction. A spectral decomposition
+          explicitly modelling the SO₂ contribution and its uncertainty envelope must be included.
+          The detection claim should be suspended until independent confirmation is obtained from
+          a third observatory (e.g., IRAM 30m or VLA).
+        </p>
+      </section>
+
+      <!-- Weakness 2 -->
+      <section class="review-block">
+        <div class="weakness-header">
+          <span class="weakness-tag">Weakness 2</span>
+          <h2>Phosphine Abundance Significantly Overstated</h2>
+        </div>
+        <p><strong>Issue:</strong>
+          The reported abundance of ~20 ppb is the central pillar of the authors' argument that
+          abiotic processes cannot explain the signal. However, this figure derives from the
+          uncorrected ALMA dataset. Independent reanalyses (Snellen et al., 2020; Villanueva et al.,
+          2020) using the same raw JCMT data recover an upper bound of &lt;1–7 ppb — a reduction
+          of at least 3×. At sub-7 ppb levels, known abiotic sources (volcanic degassing,
+          lightning-induced chemistry, photochemical pathways) cannot be confidently ruled out
+          with current Venusian atmospheric models.
+        </p>
+        <p class="review-suggestion"><strong>Suggested improvement:</strong>
+          The paper must be revised with the corrected abundance estimate as the headline figure.
+          The entire section on "production efficiency required from abiotic sources" must be
+          recalculated accordingly. A formal sensitivity analysis showing at what abundance
+          threshold abiotic explanations become implausible is required.
+        </p>
+      </section>
+
+      <!-- Weakness 3 -->
+      <section class="review-block">
+        <div class="weakness-header">
+          <span class="weakness-tag">Weakness 3</span>
+          <h2>Abiotic Production Pathways Insufficiently Excluded</h2>
+        </div>
+        <p><strong>Issue:</strong>
+          The manuscript dismisses abiotic PH₃ sources with qualitative arguments and rough
+          upper-bound estimates for volcanic and lightning production. However, Venus's interior
+          geochemistry is poorly constrained: (i) reducing volcanism involving phosphide-bearing
+          magmas has not been observationally excluded; (ii) subsurface-to-atmosphere outgassing
+          transport timescales are not modelled; (iii) recent work on UV photochemical reduction
+          of phosphates in the cloud layer (Bains et al., 2020, rebuttal) demonstrates conditions
+          under which non-biological pathways could produce ppb-level PH₃. The "life is the only
+          remaining explanation" conclusion is therefore logically premature.
+        </p>
+        <p class="review-suggestion"><strong>Suggested improvement:</strong>
+          A dedicated supplementary section must quantitatively model each abiotic pathway with
+          propagated uncertainties. The authors should collaborate with a Venus atmospheric
+          chemistry specialist to bound volcanic PH₃ flux. The conclusion must be rephrased to
+          reflect the actual epistemic status: "we cannot currently identify a confirmed abiotic
+          source" — not "life is the most plausible hypothesis."
+        </p>
+      </section>
+
+      <!-- Minor points -->
+      <section class="review-block">
+        <h2>Minor Points</h2>
+        <ul class="minor-list">
+          <li>
+            <strong>Temporal variability</strong> — Both JCMT and ALMA observations are separated
+            by months. PH₃ abundance variability with season or atmospheric dynamics is not
+            discussed. A temporally variable abiotic source cannot be distinguished from a
+            biological one with two snapshots.
+          </li>
+          <li>
+            <strong>Altitude profile</strong> — The claim is for a broad 53–61 km layer, yet
+            the spectral retrieval does not constrain the vertical distribution. A model that
+            places all PH₃ at 55 km vs. 60 km produces different photochemical destruction rates
+            and therefore different production rate requirements.
+          </li>
+          <li>
+            <strong>Statistical presentation</strong> — The reported significance (~15σ for JCMT,
+            ~11σ for ALMA) is prominently displayed but computed against thermal noise only. Line
+            confusion, baseline ripple, and systematic calibration offsets are not included in the
+            quoted significance. The Bayesian evidence for the PH₃ model vs. the null
+            (SO₂ + noise) model is not computed.
+          </li>
+        </ul>
+      </section>
+
+      <!-- Conclusion -->
+      <section class="review-block">
+        <h2>Reviewer 2 — Recommendation</h2>
+        <p>
+          I commend the authors for pursuing this bold detection and for the transparency of making
+          their data available. However, the manuscript as submitted cannot sustain its primary
+          conclusion. The compound effect of the calibration error, the abundance revision, and
+          the incomplete exclusion of abiotic sources means that the extraordinary claim of a
+          biological origin is not yet supported by the evidence. I encourage the authors to revise
+          thoroughly — a corrected, more cautious paper remains highly publishable and scientifically
+          significant, even without the Life hypothesis.
+        </p>
+        <p class="meta" style="margin-top:12px">
+          Ghost Review generated via AI-assisted adversarial pipeline ·
+          AI Challenge Arena Round 4 · 2026
+        </p>
+      </section>
+
+    </article>
+  </main>
+</body>
+</html>
