@@ -2,9 +2,10 @@
   "use strict";
 
   const ISS_API = "https://api.wheretheiss.at/v1/satellites/25544";
-  const POLL_INTERVAL_MS = 2000;
+  const POLL_INTERVAL_MS = 30000;
+  const ERROR_RETRY_MS = 45000;
+  const REQUEST_TIMEOUT_MS = 8000;
 
-  // Earth radius and gravitational parameter for orbital period calculation
   const R_EARTH_KM = 6371;
   const GM_KM3_S2 = 398600.4418;
 
@@ -22,9 +23,11 @@
   let map = null;
   let issMarker = null;
   let issPath = [];
-  const MAX_PATH_POINTS = 120; // ~4 min of ground track
+  let firstLoad = true;
+  let pollTimer = null;
+  let hasLiveFix = false;
+  const MAX_PATH_POINTS = 120;
 
-  // ─── Map Setup ─────────────────────────────────────────────────────────────
   function initMap() {
     map = new maplibregl.Map({
       container: "map",
@@ -33,9 +36,7 @@
         sources: {
           carto: {
             type: "raster",
-            tiles: [
-              "https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-            ],
+            tiles: ["https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"],
             tileSize: 256,
             attribution: "© CARTO © OpenStreetMap contributors"
           }
@@ -49,7 +50,6 @@
     });
 
     map.on("load", () => {
-      // Ground track line source
       map.addSource("iss-path", {
         type: "geojson",
         data: { type: "Feature", geometry: { type: "LineString", coordinates: [] } }
@@ -67,7 +67,6 @@
       });
     });
 
-    // ISS marker element
     const el = document.createElement("div");
     el.className = "iss-marker";
     el.setAttribute("aria-label", "ISS current position");
@@ -84,33 +83,36 @@
       .addTo(map);
   }
 
-  // ─── Orbital Period Calculation ────────────────────────────────────────────
   function calcOrbitalPeriodMin(altitudeKm) {
     const r = R_EARTH_KM + altitudeKm;
     const tSec = 2 * Math.PI * Math.sqrt(Math.pow(r, 3) / GM_KM3_S2);
     return (tSec / 60).toFixed(1);
   }
 
-  // ─── UI Updates ────────────────────────────────────────────────────────────
   function setStatus(text, mode) {
     dom.status.textContent = text;
     dom.status.className = "status-dot" + (mode ? ` status-dot--${mode}` : "");
   }
 
   function updateStats(data) {
-    const alt = parseFloat(data.altitude).toFixed(1);
-    const vel = parseFloat(data.velocity).toFixed(2);
-    const period = calcOrbitalPeriodMin(parseFloat(data.altitude));
-    const vis = data.visibility === "daylight" ? "☀ Daylight" : "🌑 Eclipsed";
-    const lat = parseFloat(data.latitude).toFixed(4);
-    const lng = parseFloat(data.longitude).toFixed(4);
-    const latLabel = lat >= 0 ? `${lat}°N` : `${Math.abs(lat)}°S`;
-    const lngLabel = lng >= 0 ? `${lng}°E` : `${Math.abs(lng)}°W`;
+    const altitude = Number.parseFloat(data.altitude);
+    const velocity = Number.parseFloat(data.velocity);
+    const latitude = Number.parseFloat(data.latitude);
+    const longitude = Number.parseFloat(data.longitude);
 
-    dom.altitude.textContent = alt;
-    dom.velocity.textContent = vel;
+    if ([altitude, velocity, latitude, longitude].some(Number.isNaN)) {
+      throw new Error("Invalid ISS payload");
+    }
+
+    const period = calcOrbitalPeriodMin(altitude);
+    const visibility = data.visibility === "daylight" ? "Daylight" : "Eclipsed";
+    const latLabel = latitude >= 0 ? `${latitude.toFixed(4)}°N` : `${Math.abs(latitude).toFixed(4)}°S`;
+    const lngLabel = longitude >= 0 ? `${longitude.toFixed(4)}°E` : `${Math.abs(longitude).toFixed(4)}°W`;
+
+    dom.altitude.textContent = altitude.toFixed(1);
+    dom.velocity.textContent = velocity.toFixed(2);
     dom.period.textContent = period;
-    dom.visibility.textContent = vis;
+    dom.visibility.textContent = visibility;
     dom.coords.textContent = `${latLabel}, ${lngLabel}`;
   }
 
@@ -118,9 +120,8 @@
     if (!map || !issMarker) return;
 
     issMarker.setLngLat([lng, lat]);
-
-    // Append to ground track
     issPath.push([lng, lat]);
+
     if (issPath.length > MAX_PATH_POINTS) {
       issPath.shift();
     }
@@ -134,22 +135,30 @@
     }
   }
 
-  // ─── Data Fetch ────────────────────────────────────────────────────────────
-  let firstLoad = true;
+  function scheduleNextFetch(delayMs) {
+    window.clearTimeout(pollTimer);
+    pollTimer = window.setTimeout(fetchISS, delayMs);
+  }
 
   async function fetchISS() {
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
     try {
       const response = await fetch(ISS_API, {
         method: "GET",
         headers: { Accept: "application/json" },
-        cache: "no-store"
+        cache: "no-store",
+        signal: controller.signal
       });
 
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
 
       const data = await response.json();
-      const lat = parseFloat(data.latitude);
-      const lng = parseFloat(data.longitude);
+      const lat = Number.parseFloat(data.latitude);
+      const lng = Number.parseFloat(data.longitude);
 
       updateStats(data);
       updateMapPosition(lat, lng);
@@ -159,22 +168,30 @@
         firstLoad = false;
       }
 
-      setStatus("Live · updating every 2s", "ok");
-      dom.liveStatus.textContent = "LIVE";
+      hasLiveFix = true;
+      setStatus("Live · refresh every 30s", "ok");
+      dom.liveStatus.textContent = "Live feed";
       dom.liveDot.classList.add("pulse");
+      scheduleNextFetch(POLL_INTERVAL_MS);
     } catch (err) {
-      setStatus("Feed error — retrying", "error");
-      dom.liveStatus.textContent = "Reconnecting...";
+      const limited = /429/.test(String(err));
+      const message = hasLiveFix
+        ? (limited ? "Rate limited · holding last fix" : "Feed delayed · holding last fix")
+        : (limited ? "Rate limited · retrying slower" : "Feed delayed · retrying");
+
+      setStatus(message, "error");
+      dom.liveStatus.textContent = hasLiveFix ? "Last fix cached" : "Connecting...";
       dom.liveDot.classList.remove("pulse");
       console.error("ISS API error:", err);
+      scheduleNextFetch(ERROR_RETRY_MS);
+    } finally {
+      window.clearTimeout(timeoutId);
     }
   }
 
-  // ─── Bootstrap ─────────────────────────────────────────────────────────────
   function bootstrap() {
     initMap();
     fetchISS();
-    window.setInterval(fetchISS, POLL_INTERVAL_MS);
   }
 
   bootstrap();
